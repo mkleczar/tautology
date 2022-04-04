@@ -13,6 +13,12 @@ public abstract class Expression {
     public static Expression or(Expression ... expressions) {
         return new Alternative(expressions);
     }
+    public static Expression and(Expression ... expressions) {
+        return new Conjunction(expressions);
+    }
+    public static Expression implication(Expression hypothesis, Expression conclusion) {
+        return new Implication(hypothesis, conclusion);
+    }
 
     public abstract Boolean validate(Context context);
 
@@ -58,6 +64,37 @@ public abstract class Expression {
             return expressions.stream()
                     .map(e -> e.validate(context))
                     .reduce(false, Boolean::logicalOr, Boolean::logicalOr);
+        }
+    }
+
+
+    private static class Conjunction extends Expression {
+        private final List<Expression> expressions;
+
+        private Conjunction(Expression ... expressions) {
+            this.expressions = List.of(expressions);
+        }
+
+        @Override
+        public Boolean validate(Context context) {
+            return expressions.stream()
+                    .map(e -> e.validate(context))
+                    .reduce(true, Boolean::logicalAnd, Boolean::logicalAnd);
+        }
+    }
+
+    private static class Implication extends Expression {
+        private final Expression hypothesis;
+        private final Expression conclusion;
+
+        public Implication(Expression hypothesis, Expression conclusion) {
+            this.hypothesis = hypothesis;
+            this.conclusion = conclusion;
+        }
+
+        @Override
+        public Boolean validate(Context context) {
+            return !hypothesis.validate(context) || conclusion.validate(context);
         }
     }
 }

@@ -51,4 +51,44 @@ public class ExpressionTest {
                 Arguments.of(false, false, false)
         );
     }
+
+    @ParameterizedTest
+    @MethodSource("checkConjunctionOfVariableParams")
+    public void checkConjunctionOfVariable(Boolean p, Boolean q, Boolean expected) {
+        Context context = new Context()
+                .setParam("p", p)
+                .setParam("q", q)
+                ;
+        Expression expression = and(variable("p"), variable("q"));
+        assertThat(expression.validate(context)).isEqualTo(expected);
+    }
+
+    private static Stream<Arguments> checkConjunctionOfVariableParams() {
+        return Stream.of(
+                Arguments.of(true, true, true),
+                Arguments.of(true, false, false),
+                Arguments.of(false, true, false),
+                Arguments.of(false, false, false)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("checkImplicationOfVariableParams")
+    public void checkImplicationOfVariable(Boolean p, Boolean q, Boolean expected) {
+        Context context = new Context()
+                .setParam("p", p)
+                .setParam("q", q)
+                ;
+        Expression expression = implication(variable("p"), variable("q"));
+        assertThat(expression.validate(context)).isEqualTo(expected);
+    }
+
+    private static Stream<Arguments> checkImplicationOfVariableParams() {
+        return Stream.of(
+                Arguments.of(true, true, true),
+                Arguments.of(true, false, false),
+                Arguments.of(false, true, true),
+                Arguments.of(false, false, true)
+        );
+    }
 }
