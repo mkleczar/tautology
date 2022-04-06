@@ -1,8 +1,14 @@
 package org.example.tautology;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class Expression {
+
+    public static final String IMPLICATION_STR = "\u21D2";
+    public static final String CONJUNCTION_STR = "\u2228";
+    public static final String ALTERNATIVE_STR = "\u2228";
+    public static final String NEGATION_STR = "\u00AC";
 
     public static Expression variable(String name) {
         return new Variable(name);
@@ -22,6 +28,9 @@ public abstract class Expression {
 
     public abstract Boolean validate(Context context);
 
+    @Override
+    public abstract String toString();
+
 
 
 
@@ -37,6 +46,10 @@ public abstract class Expression {
         public Boolean validate(Context context) {
             return context.check(name);
         }
+        @Override
+        public String toString() {
+            return name;
+        }
     }
 
     private static class Negation extends Expression {
@@ -49,6 +62,11 @@ public abstract class Expression {
         @Override
         public Boolean validate(Context context) {
             return !expression.validate(context);
+        }
+
+        @Override
+        public String toString() {
+            return NEGATION_STR + expression.toString();
         }
     }
 
@@ -64,6 +82,13 @@ public abstract class Expression {
             return expressions.stream()
                     .map(e -> e.validate(context))
                     .reduce(false, Boolean::logicalOr, Boolean::logicalOr);
+        }
+
+        @Override
+        public String toString() {
+            return expressions.stream()
+                    .map(Expression::toString)
+                    .collect(Collectors.joining(ALTERNATIVE_STR, "(", ")"));
         }
     }
 
@@ -81,6 +106,13 @@ public abstract class Expression {
                     .map(e -> e.validate(context))
                     .reduce(true, Boolean::logicalAnd, Boolean::logicalAnd);
         }
+
+        @Override
+        public String toString() {
+            return expressions.stream()
+                    .map(Expression::toString)
+                    .collect(Collectors.joining(CONJUNCTION_STR, "(", ")"));
+        }
     }
 
     private static class Implication extends Expression {
@@ -95,6 +127,11 @@ public abstract class Expression {
         @Override
         public Boolean validate(Context context) {
             return !hypothesis.validate(context) || conclusion.validate(context);
+        }
+
+        @Override
+        public String toString() {
+            return "(" + hypothesis.toString() + IMPLICATION_STR + conclusion.toString() + ")";
         }
     }
 }
