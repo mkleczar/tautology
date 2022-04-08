@@ -5,25 +5,23 @@ import java.util.stream.Collectors;
 
 public abstract class Expression {
 
-    public static final String IMPLICATION_STR = "\u21D2";
-    public static final String CONJUNCTION_STR = "\u2228";
-    public static final String ALTERNATIVE_STR = "\u2228";
-    public static final String NEGATION_STR = "\u00AC";
-
     public static Expression variable(String name) {
         return new Variable(name);
     }
     public static Expression not(Expression expression) {
-        return new Negation(expression);
+        return new UnaryExpression(UnaryLogicalOperator.NOT, expression);
     }
     public static Expression or(Expression ... expressions) {
-        return new Alternative(expressions);
+        return new BinaryExpression(BinaryLogicalOperator.OR, expressions);
     }
     public static Expression and(Expression ... expressions) {
-        return new Conjunction(expressions);
+        return new BinaryExpression(BinaryLogicalOperator.AND, expressions);
     }
     public static Expression implication(Expression hypothesis, Expression conclusion) {
-        return new Implication(hypothesis, conclusion);
+        return new BinaryExpression(BinaryLogicalOperator.IMPLICATION, hypothesis, conclusion);
+    }
+    public static Expression doubleImplication(Expression antecedent, Expression consequent) {
+        return new BinaryExpression(BinaryLogicalOperator.DOUBLE_IMPLICATION, antecedent, consequent);
     }
 
     public abstract Boolean validate(Context context);
@@ -35,7 +33,6 @@ public abstract class Expression {
 
 
     private static class Variable extends Expression {
-
         private final String name;
 
         private Variable(String name) {
@@ -52,28 +49,32 @@ public abstract class Expression {
         }
     }
 
-    private static class Negation extends Expression {
+    private static class UnaryExpression extends Expression {
+        private final UnaryLogicalOperator operator;
         private final Expression expression;
 
-        private Negation(Expression expression) {
+        public UnaryExpression(UnaryLogicalOperator operator, Expression expression) {
+            this.operator = operator;
             this.expression = expression;
         }
 
         @Override
         public Boolean validate(Context context) {
-            return !expression.validate(context);
+            return operator.apply(expression.validate(context));
         }
 
         @Override
         public String toString() {
-            return NEGATION_STR + expression.toString();
+            return operator.getSymbol() + expression.toString();
         }
     }
 
-    private static class Alternative extends Expression {
+    private static class BinaryExpression extends Expression {
+        private final BinaryLogicalOperator operator;
         private final List<Expression> expressions;
 
-        private Alternative(Expression ... expressions) {
+        public BinaryExpression(BinaryLogicalOperator operator, Expression ... expressions) {
+            this.operator = operator;
             this.expressions = List.of(expressions);
         }
 
@@ -81,57 +82,15 @@ public abstract class Expression {
         public Boolean validate(Context context) {
             return expressions.stream()
                     .map(e -> e.validate(context))
-                    .reduce(false, Boolean::logicalOr, Boolean::logicalOr);
+                    .reduce(operator)
+                    .orElse(false);
         }
 
         @Override
         public String toString() {
             return expressions.stream()
                     .map(Expression::toString)
-                    .collect(Collectors.joining(ALTERNATIVE_STR, "(", ")"));
-        }
-    }
-
-
-    private static class Conjunction extends Expression {
-        private final List<Expression> expressions;
-
-        private Conjunction(Expression ... expressions) {
-            this.expressions = List.of(expressions);
-        }
-
-        @Override
-        public Boolean validate(Context context) {
-            return expressions.stream()
-                    .map(e -> e.validate(context))
-                    .reduce(true, Boolean::logicalAnd, Boolean::logicalAnd);
-        }
-
-        @Override
-        public String toString() {
-            return expressions.stream()
-                    .map(Expression::toString)
-                    .collect(Collectors.joining(CONJUNCTION_STR, "(", ")"));
-        }
-    }
-
-    private static class Implication extends Expression {
-        private final Expression hypothesis;
-        private final Expression conclusion;
-
-        public Implication(Expression hypothesis, Expression conclusion) {
-            this.hypothesis = hypothesis;
-            this.conclusion = conclusion;
-        }
-
-        @Override
-        public Boolean validate(Context context) {
-            return !hypothesis.validate(context) || conclusion.validate(context);
-        }
-
-        @Override
-        public String toString() {
-            return "(" + hypothesis.toString() + IMPLICATION_STR + conclusion.toString() + ")";
+                    .collect(Collectors.joining(operator.getSymbol(), "(", ")"));
         }
     }
 }

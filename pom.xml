@@ -40,6 +40,11 @@
             <version>${version.slf4j}</version>
         </dependency>
         <dependency>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>${version.junit}</version>

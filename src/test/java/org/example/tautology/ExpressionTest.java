@@ -7,11 +7,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.example.tautology.Expression.variable;
-import static org.example.tautology.Expression.and;
-import static org.example.tautology.Expression.or;
-import static org.example.tautology.Expression.not;
-import static org.example.tautology.Expression.implication;
+import static org.example.tautology.Expression.*;
 
 @Slf4j
 public class ExpressionTest {
@@ -96,6 +92,26 @@ public class ExpressionTest {
                 Arguments.of(true, true, true),
                 Arguments.of(true, false, false),
                 Arguments.of(false, true, true),
+                Arguments.of(false, false, true)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("checkDoubleImplicationOfVariableParams")
+    public void checkDoubleImplicationOfVariable(Boolean p, Boolean q, Boolean expected) {
+        Context context = Context.builder()
+                .param("p", p)
+                .param("q", q)
+                .build();
+        Expression expression = doubleImplication(variable("p"), variable("q"));
+        assertThat(expression.validate(context)).isEqualTo(expected);
+    }
+
+    private static Stream<Arguments> checkDoubleImplicationOfVariableParams() {
+        return Stream.of(
+                Arguments.of(true, true, true),
+                Arguments.of(true, false, false),
+                Arguments.of(false, true, false),
                 Arguments.of(false, false, true)
         );
     }
