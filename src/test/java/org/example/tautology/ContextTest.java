@@ -26,7 +26,6 @@ public class ContextTest {
         Set<String> params = Set.of();
         ContextAllPossibleValuesGenerator it = new ContextAllPossibleValuesGenerator(params);
         List<Context> list = it.stream().collect(Collectors.toList());
-        list.forEach(c -> log.info("{}", c));
         assertThat(list.size()).isEqualTo(1);
         assertThat(list.get(0).isEmpty()).isTrue();
     }

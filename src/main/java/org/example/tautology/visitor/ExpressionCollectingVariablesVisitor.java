@@ -1,4 +1,6 @@
-package org.example.tautology;
+package org.example.tautology.visitor;
+
+import org.example.tautology.Expression;
 
 import java.util.HashSet;
 import java.util.Set;

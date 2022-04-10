@@ -1,16 +1,14 @@
 package org.example.tautology;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.example.tautology.BinaryLogicalOperator.AND;
-import static org.example.tautology.BinaryLogicalOperator.IMPLICATION;
-import static org.example.tautology.BinaryLogicalOperator.OR;
+import static org.example.tautology.operators.BinaryLogicalOperator.AND;
+import static org.example.tautology.operators.BinaryLogicalOperator.IMPLICATION;
+import static org.example.tautology.operators.BinaryLogicalOperator.OR;
 import static org.example.tautology.Expression.*;
-import static org.example.tautology.UnaryLogicalOperator.NOT;
+import static org.example.tautology.operators.UnaryLogicalOperator.NOT;
 
 @Slf4j
 public class ExpressionToStringTest {
@@ -58,7 +56,7 @@ public class ExpressionToStringTest {
         Expression e = implication(
                 or(variable("p"), variable("q")),
                 and(not(variable("p")), variable("q")));
-        log.info("Expression: {}", e);
+        // log.info("Expression: {}", e);
         assertThat(e.toString()).isEqualTo("((p"+OR.getSymbol()+"q)"+IMPLICATION.getSymbol()+"("+ NOT.getSymbol()+"p"+AND.getSymbol()+"q))");
     }
 

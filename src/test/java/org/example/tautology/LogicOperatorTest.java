@@ -3,8 +3,8 @@ package org.example.tautology;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.example.tautology.BinaryLogicalOperator.*;
-import static org.example.tautology.UnaryLogicalOperator.NOT;
+import static org.example.tautology.operators.BinaryLogicalOperator.*;
+import static org.example.tautology.operators.UnaryLogicalOperator.NOT;
 
 public class LogicOperatorTest {
 

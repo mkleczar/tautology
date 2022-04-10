@@ -1,4 +1,4 @@
-package org.example.tautology;
+package org.example.tautology.operators;
 
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;

@@ -1,6 +1,9 @@
 package org.example.tautology;
 
 import org.example.tautology.context.Context;
+import org.example.tautology.operators.BinaryLogicalOperator;
+import org.example.tautology.operators.UnaryLogicalOperator;
+import org.example.tautology.visitor.ExpressionVisitor;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,7 +46,7 @@ public abstract class Expression {
     }
 
 
-    static class Variable extends Expression {
+    public static class Variable extends Expression {
         private final String name;
 
         private Variable(String name) {
@@ -70,10 +73,10 @@ public abstract class Expression {
         }
     }
 
-    static class Const extends Expression {
+    public static class Const extends Expression {
         private final boolean value;
 
-        public Const(boolean value) {
+        private Const(boolean value) {
             this.value = value;
         }
 
@@ -93,11 +96,11 @@ public abstract class Expression {
         }
     }
 
-    static class UnaryExpression extends Expression {
+    public static class UnaryExpression extends Expression {
         private final UnaryLogicalOperator operator;
         private final Expression expression;
 
-        public UnaryExpression(UnaryLogicalOperator operator, Expression expression) {
+        private UnaryExpression(UnaryLogicalOperator operator, Expression expression) {
             this.operator = operator;
             this.expression = expression;
         }
@@ -119,11 +122,11 @@ public abstract class Expression {
         }
     }
 
-    static class BinaryExpression extends Expression {
+    public static class BinaryExpression extends Expression {
         private final BinaryLogicalOperator operator;
         private final List<Expression> expressions;
 
-        public BinaryExpression(BinaryLogicalOperator operator, Expression ... expressions) {
+        private BinaryExpression(BinaryLogicalOperator operator, Expression ... expressions) {
             this.operator = operator;
             this.expressions = List.of(expressions);
         }

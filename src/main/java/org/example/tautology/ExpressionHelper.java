@@ -1,6 +1,7 @@
 package org.example.tautology;
 
 import org.example.tautology.context.ContextAllPossibleValuesGenerator;
+import org.example.tautology.visitor.ExpressionCollectingVariablesVisitor;
 
 import java.util.Optional;
 import java.util.Set;
