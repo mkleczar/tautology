@@ -9,11 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.example.tautology.BinaryLogicalOperator.AND;
 import static org.example.tautology.BinaryLogicalOperator.IMPLICATION;
 import static org.example.tautology.BinaryLogicalOperator.OR;
-import static org.example.tautology.Expression.and;
-import static org.example.tautology.Expression.implication;
-import static org.example.tautology.Expression.not;
-import static org.example.tautology.Expression.or;
-import static org.example.tautology.Expression.variable;
+import static org.example.tautology.Expression.*;
 import static org.example.tautology.UnaryLogicalOperator.NOT;
 
 @Slf4j
@@ -23,6 +19,14 @@ public class ExpressionToStringTest {
     public void variableToStringTest() {
         Expression e = variable("p");
         assertThat(e.toString()).isEqualTo("p");
+    }
+
+    @Test
+    public void constToStringTest() {
+        Expression e1 = constTrue();
+        assertThat(e1.toString()).isEqualTo("1");
+        Expression e0 = constFalse();
+        assertThat(e0.toString()).isEqualTo("0");
     }
 
     @Test

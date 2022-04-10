@@ -28,6 +28,15 @@ public class ExpressionTest {
     }
 
     @Test
+    public void checkValueOfConst() {
+        Context context = Context.empty();
+        Expression trueConst = constTrue();
+        assertThat(trueConst.validate(context)).isTrue();
+        Expression falseConst = constFalse();
+        assertThat(falseConst.validate(context)).isFalse();
+    }
+
+    @Test
     public void checkValueOfVariableNegation() {
         Context context = Context.builder()
                 .paramTrue("p").build();
@@ -115,4 +124,6 @@ public class ExpressionTest {
                 Arguments.of(false, false, true)
         );
     }
+
+
 }

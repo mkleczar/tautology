@@ -8,6 +8,12 @@ public abstract class Expression {
     public static Expression variable(String name) {
         return new Variable(name);
     }
+    public static Expression constTrue() {
+        return new Const(true);
+    }
+    public static Expression constFalse() {
+        return new Const(false);
+    }
     public static Expression not(Expression expression) {
         return new UnaryExpression(UnaryLogicalOperator.NOT, expression);
     }
@@ -54,6 +60,29 @@ public abstract class Expression {
         @Override
         public String asText() {
             return name;
+        }
+    }
+
+    private static class Const extends Expression {
+        private final boolean value;
+
+        public Const(boolean value) {
+            this.value = value;
+        }
+
+        @Override
+        public Boolean validate(Context context) {
+            return value;
+        }
+
+        @Override
+        public boolean isVariable() {
+            return false;
+        }
+
+        @Override
+        public String asText() {
+            return value ? "1" : "0";
         }
     }
 
