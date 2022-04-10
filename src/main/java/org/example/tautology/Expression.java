@@ -25,11 +25,13 @@ public abstract class Expression {
     }
 
     public abstract Boolean validate(Context context);
+    public abstract boolean isVariable();
+    public abstract String asText();
 
     @Override
-    public abstract String toString();
-
-
+    public String toString() {
+        return asText();
+    }
 
 
     private static class Variable extends Expression {
@@ -43,8 +45,14 @@ public abstract class Expression {
         public Boolean validate(Context context) {
             return context.check(name);
         }
+
         @Override
-        public String toString() {
+        public boolean isVariable() {
+            return true;
+        }
+
+        @Override
+        public String asText() {
             return name;
         }
     }
@@ -64,7 +72,12 @@ public abstract class Expression {
         }
 
         @Override
-        public String toString() {
+        public boolean isVariable() {
+            return false;
+        }
+
+        @Override
+        public String asText() {
             return operator.getSymbol() + expression.toString();
         }
     }
@@ -87,7 +100,12 @@ public abstract class Expression {
         }
 
         @Override
-        public String toString() {
+        public boolean isVariable() {
+            return false;
+        }
+
+        @Override
+        public String asText() {
             return expressions.stream()
                     .map(Expression::toString)
                     .collect(Collectors.joining(operator.getSymbol(), "(", ")"));
