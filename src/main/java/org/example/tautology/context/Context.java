@@ -1,14 +1,18 @@
-package org.example.tautology;
+package org.example.tautology.context;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class Context {
 
-    private final Map<String, Boolean> params;
+    private final SortedMap<String, Boolean> params;
 
-    private Context(Map<String, Boolean> params) {
+    Context(SortedMap<String, Boolean> params) {
         this.params = params;
+    }
+    Context(Map<String, Boolean> params) {
+        this.params = new TreeMap<>(params);
     }
 
     public static Builder builder() {
@@ -16,15 +20,30 @@ public class Context {
     }
 
     public static Context empty() {
-        return new Context(new HashMap<>());
+        return new Context(new TreeMap<>());
+    }
+
+    public boolean isEmpty() {
+        return params.isEmpty();
     }
 
     public Boolean check(String name) {
         return params.getOrDefault(name, false);
     }
 
+    SortedMap<String, Boolean> getParams() {
+        return params;
+    }
+
+    @Override
+    public String toString() {
+        return "Context{" +
+                "params=" + params +
+                '}';
+    }
+
     public static class Builder {
-        private Map<String, Boolean> params = new HashMap<>();
+        private SortedMap<String, Boolean> params = new TreeMap<>();
 
         public Context build() {
             var tmp = params;
