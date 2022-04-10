@@ -7,7 +7,14 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.example.tautology.Expression.*;
+import static org.example.tautology.Expression.and;
+import static org.example.tautology.Expression.constFalse;
+import static org.example.tautology.Expression.constTrue;
+import static org.example.tautology.Expression.doubleImplication;
+import static org.example.tautology.Expression.implication;
+import static org.example.tautology.Expression.not;
+import static org.example.tautology.Expression.or;
+import static org.example.tautology.Expression.variable;
 
 @Slf4j
 public class ExpressionTest {

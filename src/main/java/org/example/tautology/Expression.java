@@ -31,8 +31,9 @@ public abstract class Expression {
     }
 
     public abstract Boolean validate(Context context);
-    public abstract boolean isVariable();
     public abstract String asText();
+    public abstract void accept(ExpressionVisitor visitor);
+
 
     @Override
     public String toString() {
@@ -40,7 +41,7 @@ public abstract class Expression {
     }
 
 
-    private static class Variable extends Expression {
+    static class Variable extends Expression {
         private final String name;
 
         private Variable(String name) {
@@ -53,17 +54,21 @@ public abstract class Expression {
         }
 
         @Override
-        public boolean isVariable() {
-            return true;
+        public void accept(ExpressionVisitor visitor) {
+            visitor.visiting(this);
         }
 
         @Override
         public String asText() {
             return name;
         }
+
+        public String getName() {
+            return this.name;
+        }
     }
 
-    private static class Const extends Expression {
+    static class Const extends Expression {
         private final boolean value;
 
         public Const(boolean value) {
@@ -76,8 +81,8 @@ public abstract class Expression {
         }
 
         @Override
-        public boolean isVariable() {
-            return false;
+        public void accept(ExpressionVisitor visitor) {
+            visitor.visiting(this);
         }
 
         @Override
@@ -86,7 +91,7 @@ public abstract class Expression {
         }
     }
 
-    private static class UnaryExpression extends Expression {
+    static class UnaryExpression extends Expression {
         private final UnaryLogicalOperator operator;
         private final Expression expression;
 
@@ -101,8 +106,9 @@ public abstract class Expression {
         }
 
         @Override
-        public boolean isVariable() {
-            return false;
+        public void accept(ExpressionVisitor visitor) {
+            expression.accept(visitor);
+            visitor.visiting(this);
         }
 
         @Override
@@ -111,7 +117,7 @@ public abstract class Expression {
         }
     }
 
-    private static class BinaryExpression extends Expression {
+    static class BinaryExpression extends Expression {
         private final BinaryLogicalOperator operator;
         private final List<Expression> expressions;
 
@@ -129,8 +135,9 @@ public abstract class Expression {
         }
 
         @Override
-        public boolean isVariable() {
-            return false;
+        public void accept(ExpressionVisitor visitor) {
+            expressions.forEach(expression -> expression.accept(visitor));
+            visitor.visiting(this);
         }
 
         @Override
