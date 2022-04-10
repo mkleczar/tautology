@@ -35,4 +35,28 @@ public class ExpressionHelperTest {
                 Arguments.of(doubleImplication(variable("p"),not(variable("q"))), Set.of("p", "q"))
         );
     }
+
+    @ParameterizedTest
+    @MethodSource("isTautologyData")
+    public void testIsTautology(Expression expression, boolean isTautology) {
+        assertThat(ExpressionHelper.isTautology(expression)).isEqualTo(isTautology);
+    }
+
+    private static Stream<Arguments> isTautologyData() {
+        return Stream.of(
+                Arguments.of(or(variable("p"), not(variable("p"))), true),
+                Arguments.of(and(variable("p"), not(variable("p"))), false),
+                Arguments.of(not(and(variable("p"), not(variable("p")))), true),
+                Arguments.of(doubleImplication(variable("p"), variable("p")), true),
+                Arguments.of(implication(constFalse(), variable("p")), true),
+                Arguments.of(constFalse(), false),
+                Arguments.of(not(constFalse()), true),
+                Arguments.of(constTrue(), true),
+                Arguments.of(
+                        doubleImplication(
+                                and(not(variable("p")), not(variable("q"))),
+                                not(or(variable("p"), variable("q")))),
+                         true)
+        );
+    }
 }

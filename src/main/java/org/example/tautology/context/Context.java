@@ -11,9 +11,6 @@ public class Context {
     Context(SortedMap<String, Boolean> params) {
         this.params = params;
     }
-    Context(Map<String, Boolean> params) {
-        this.params = new TreeMap<>(params);
-    }
 
     public static Builder builder() {
         return new Builder();
@@ -29,10 +26,6 @@ public class Context {
 
     public Boolean check(String name) {
         return params.getOrDefault(name, false);
-    }
-
-    SortedMap<String, Boolean> getParams() {
-        return params;
     }
 
     @Override

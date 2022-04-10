@@ -1,5 +1,7 @@
 package org.example.tautology;
 
+import org.example.tautology.context.ContextAllPossibleValuesGenerator;
+
 import java.util.Optional;
 import java.util.Set;
 
@@ -10,5 +12,11 @@ public class ExpressionHelper {
                 .map(v -> {expression.accept(v); return v;})
                 .map(ExpressionCollectingVariablesVisitor::getVariableNames)
                 .orElse(Set.of());
+    }
+
+    public static boolean isTautology(Expression expression) {
+        Set<String> params = collectVariables(expression);
+        ContextAllPossibleValuesGenerator generator = new ContextAllPossibleValuesGenerator(params);
+        return generator.stream().allMatch(expression::validate);
     }
 }
