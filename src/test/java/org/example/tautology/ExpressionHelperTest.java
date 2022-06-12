@@ -1,5 +1,6 @@
 package org.example.tautology;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -57,6 +58,25 @@ public class ExpressionHelperTest {
                                 and(not(variable("p")), not(variable("q"))),
                                 not(or(variable("p"), variable("q")))),
                          true)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("popularTautologyData")
+    public void popularTautologyTest(Expression expression) {
+        assertThat(ExpressionHelper.isTautology(expression)).isEqualTo(true);
+    }
+
+    private static Stream<Arguments> popularTautologyData() {
+        Expression modusTollendoTollens = implication(and(implication(variable("p"), variable("q")), not(variable("q"))), not(variable("q")));
+        Expression modusPonendoPonens = implication(and(implication(variable("p"), variable("q")), variable("p")), variable("q"));
+        Expression modusTollendoPonens = implication(and(or(variable("p"), variable("q")), not(variable("p"))), variable("q"));
+        Expression modusPonendoTollens = implication(and(not(and(variable("p"), variable("q"))), variable("p")), not(variable("q")));
+        return Stream.of(
+                Arguments.of(modusTollendoTollens),
+                Arguments.of(modusPonendoPonens),
+                Arguments.of(modusTollendoPonens),
+                Arguments.of(modusPonendoTollens)
         );
     }
 }
