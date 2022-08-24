@@ -22,10 +22,18 @@ public abstract class Token {
     public static Token operator(UnaryLogicalOperator oper) {
         return new PrefixOperatorToken(oper);
     }
+    public static Token leftBracket() {
+        return new LeftBracket();
+    }
+    public static Token rightBracket() {
+        return new RightBracket();
+    }
 
     public boolean isOperatorToken() {return false;}
     public List<Token> absorb(ListNode<Token> token) {return Collections.emptyList();}
     public int getPriority() {return 0;}
+    public boolean isLeftBracket() {return false;}
+    public boolean isRightBracket() {return false;}
 
     @AllArgsConstructor
     @Getter
@@ -110,5 +118,13 @@ public abstract class Token {
     public static class ExpressionToken extends Token {
         private Expression expression;
 
+    }
+
+    public static class LeftBracket extends Token {
+        public boolean isLeftBracket() {return true;}
+    }
+
+    public static class RightBracket extends Token {
+        public boolean isRightBracket() {return true;}
     }
 }
