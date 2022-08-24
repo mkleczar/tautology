@@ -68,7 +68,7 @@ public class ExpressionHelperTest {
     }
 
     private static Stream<Arguments> popularTautologyData() {
-        Expression modusTollendoTollens = implication(and(implication(variable("p"), variable("q")), not(variable("q"))), not(variable("q")));
+        Expression modusTollendoTollens = implication(and(implication(variable("p"), variable("q")), not(variable("q"))), not(variable("p")));
         Expression modusPonendoPonens = implication(and(implication(variable("p"), variable("q")), variable("p")), variable("q"));
         Expression modusTollendoPonens = implication(and(or(variable("p"), variable("q")), not(variable("p"))), variable("q"));
         Expression modusPonendoTollens = implication(and(not(and(variable("p"), variable("q"))), variable("p")), not(variable("q")));
