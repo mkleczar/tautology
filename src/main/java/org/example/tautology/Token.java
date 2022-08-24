@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.ToString;
 import org.example.tautology.operators.BinaryLogicalOperator;
 import org.example.tautology.operators.UnaryLogicalOperator;
+import org.example.tautology.utils.ListNode;
 
 import java.util.*;
 import java.util.function.BiFunction;
@@ -23,7 +24,7 @@ public abstract class Token {
     }
 
     public boolean isOperatorToken() {return false;}
-    public List<Token> absorb(List<Token> tokens, int operatorIndex) {return Collections.emptyList();}
+    public List<Token> absorb(ListNode<Token> token) {return Collections.emptyList();}
     public int getPriority() {return 0;}
 
     @AllArgsConstructor
@@ -47,15 +48,18 @@ public abstract class Token {
         }
 
         @Override
-        public List<Token> absorb(List<Token> tokens, int operatorIndex) {
+        public List<Token> absorb(ListNode<Token> token) {
 
-            List<Token> newTokens = new ArrayList<>(tokens.subList(0, operatorIndex - 1));
+            ListNode<Token> tokenBefore = token.prevNode();
+            ListNode<Token> tokenAfter = token.nextNode();
 
-            ExpressionToken left = (ExpressionToken) tokens.get(operatorIndex - 1);
-            ExpressionToken right = (ExpressionToken) tokens.get(operatorIndex + 1);
+            List<Token> newTokens = tokenBefore.getListBefore();
+
+            ExpressionToken left = (ExpressionToken) tokenBefore.getValue();
+            ExpressionToken right = (ExpressionToken) tokenAfter.getValue();
             newTokens.add(new ExpressionToken(map.get(operator).apply(left.getExpression(), right.getExpression())));
 
-            newTokens.addAll(tokens.subList(operatorIndex + 2, tokens.size()));
+            newTokens.addAll(tokenAfter.getListAfter());
             return newTokens;
         }
 
@@ -83,14 +87,14 @@ public abstract class Token {
         }
 
         @Override
-        public List<Token> absorb(List<Token> tokens, int operatorIndex) {
+        public List<Token> absorb(ListNode<Token> token) {
+            ListNode<Token> tokenAfter = token.nextNode();
 
-            List<Token> newTokens = new ArrayList<>(tokens.subList(0, operatorIndex));
-
-            ExpressionToken right = (ExpressionToken) tokens.get(operatorIndex + 1);
+            List<Token> newTokens = token.getListBefore();
+            ExpressionToken right = (ExpressionToken) tokenAfter.getValue();
             newTokens.add(new ExpressionToken(map.get(operator).apply(right.getExpression())));
 
-            newTokens.addAll(tokens.subList(operatorIndex + 2, tokens.size()));
+            newTokens.addAll(tokenAfter.getListAfter());
             return newTokens;
         }
 

@@ -21,7 +21,7 @@ public class ScannerTest {
     @ParameterizedTest
     @MethodSource("scannerTestArguments")
     public void testScanner(List<Token> tokens, Expression expression) {
-        Expression ex = Scanner.scanNoBrackets(tokens);
+        Expression ex = Scanner.scanNoBrackets(tokens).getExpression();
         // log.info("Ex: {}", ex);
         assertThat(ex.asText()).isEqualTo(expression.asText());
     }
