@@ -1,9 +1,12 @@
 package org.example.tautology;
 
+import org.example.tautology.context.Context;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -77,6 +80,33 @@ public class ExpressionHelperTest {
                 Arguments.of(modusPonendoPonens),
                 Arguments.of(modusTollendoPonens),
                 Arguments.of(modusPonendoTollens)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("validationData")
+    public void validationTest(String expressionStr, Context context, boolean expected) {
+        Expression expression = Scanner.scan(expressionStr);
+        boolean result = ExpressionHelper.validate(expression, context);
+        assertThat(result).isEqualTo(expected);
+    }
+
+    private static Stream<Arguments> validationData() {
+        return Stream.of(
+                Arguments.of("~p|q", Context.builder().paramTrue("p").paramTrue("q").build(), true),
+                Arguments.of("~p|q", Context.builder().paramFalse("p").paramTrue("q").build(), true),
+                Arguments.of("~p|q", Context.builder().paramTrue("p").paramFalse("q").build(), false),
+                Arguments.of("~p|q", Context.builder().paramFalse("p").paramFalse("q").build(), true),
+
+                Arguments.of("p=>q", Context.builder().paramTrue("p").paramTrue("q").build(), true),
+                Arguments.of("p=>q", Context.builder().paramFalse("p").paramTrue("q").build(), true),
+                Arguments.of("p=>q", Context.builder().paramTrue("p").paramFalse("q").build(), false),
+                Arguments.of("p=>q", Context.builder().paramFalse("p").paramFalse("q").build(), true),
+
+                Arguments.of("(p|q)&~p", Context.builder().paramTrue("p").paramTrue("q").build(), false),
+                Arguments.of("(p|q)&~p", Context.builder().paramFalse("p").paramTrue("q").build(), true),
+                Arguments.of("(p|q)&~p", Context.builder().paramTrue("p").paramFalse("q").build(), false),
+                Arguments.of("(p|q)&~p", Context.builder().paramFalse("p").paramFalse("q").build(), false)
         );
     }
 }

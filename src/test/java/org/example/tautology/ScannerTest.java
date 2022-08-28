@@ -138,4 +138,56 @@ public class ScannerTest {
                 )
         );
     }
+
+    @ParameterizedTest
+    @MethodSource("scanStringExpressionArguments")
+    public void scanStringExpressionTest(String expression, Expression expected) {
+        Expression ex = Scanner.scan(expression);
+        log.info("Ex: {}", ex);
+        assertThat(ex.asText()).isEqualTo(expected.asText());
+    }
+    public static Stream<Arguments> scanStringExpressionArguments() {
+        return Stream.of(
+                Arguments.of(
+                        "p",
+                        variable("p")
+                ),
+                Arguments.of(
+                        "~p",
+                        not(variable("p"))
+                ),
+                Arguments.of(
+                        "p|q",
+                        or(variable("p"), variable("q"))
+                ),
+                Arguments.of(
+                        "p|(q&r)",
+                        or(variable("p"), and(variable("q"), variable("r")))
+                ),
+                Arguments.of(
+                        "(p&q)|r",
+                        or(and(variable("p"), variable("q")), variable("r"))
+                ),
+                Arguments.of(
+                        "p=>(q|r)",
+                        implication(variable("p"), or(variable("q"), variable("r")))
+                ),
+                Arguments.of(
+                        "~p|~q",
+                        or(not(variable("p")), not(variable("q")))
+                ),
+                Arguments.of(
+                        "p<=>q",
+                        doubleImplication(variable("p"), variable("q"))
+                ),
+                Arguments.of(
+                        "~(~p)<=>p",
+                        doubleImplication(not(not(variable("p"))), variable("p"))
+                ),
+                Arguments.of(
+                        "~(~p<=>p)",
+                        not(doubleImplication(not(variable("p")), variable("p")))
+                )
+        );
+    }
 }

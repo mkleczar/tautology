@@ -10,6 +10,10 @@ import java.util.Optional;
 @Slf4j
 public class Scanner {
 
+    public static Expression scan(String expression) {
+        return scan(Tokens.parse(expression));
+    }
+
     public static Expression scan(List<Token> tokens) {
         if (tokens.size() == 1) {
             return ((Token.ExpressionToken) tokens.get(0)).getExpression();
