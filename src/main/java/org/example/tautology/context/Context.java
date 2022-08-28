@@ -55,5 +55,10 @@ public class Context {
         public Builder paramFalse(String name) {
             return param(name, false);
         }
+
+        public Builder merge(Builder b) {
+            params.putAll(b.params);
+            return this;
+        }
     }
 }
