@@ -16,6 +16,12 @@ public abstract class Token {
     public static Token expression(Expression exp) {
         return new ExpressionToken(exp);
     }
+    public static Token constFalse() {
+        return new ExpressionToken(Expression.constFalse());
+    }
+    public static Token constTrue() {
+        return new ExpressionToken(Expression.constTrue());
+    }
     public static Token operator(BinaryLogicalOperator oper) {
         return new InfixOperatorToken(oper);
     }
