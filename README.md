@@ -1,4 +1,5 @@
 # tautology
+test
 
 Simple library for parsing and checking validation for logical expression.
 
